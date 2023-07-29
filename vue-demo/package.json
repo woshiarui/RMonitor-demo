@@ -1,0 +1,27 @@
+{
+  "name": "vue-demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@rmonitor/common": "^2.1.1",
+    "@rmonitor/core": "^3.0.0",
+    "@rmonitor/performance": "^2.1.1",
+    "@rmonitor/recordscreen": "^2.1.1",
+    "@rmonitor/types": "^2.1.1",
+    "@rmonitor/utils": "^2.1.1",
+    "element-plus": "^2.3.8",
+    "error-stack-parser": "^2.1.4",
+    "rrweb": "^2.0.0-alpha.4",
+    "vue": "^3.3.4",
+    "web-vitals": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vite": "^4.4.6"
+  }
+}
