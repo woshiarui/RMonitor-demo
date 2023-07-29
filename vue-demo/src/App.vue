@@ -1,10 +1,14 @@
 <script setup>
 import { createFMPMonitor } from "@rmonitor/performance/src/FMP";
 import { getWebVitals } from "@rmonitor/performance/src/core/performance";
+import { getEvents } from "@rmonitor/recordscreen/src/recordscreen";
+import { record } from "rrweb";
+import rrwebPlayer from "rrweb-player";
+import "rrweb-player/dist/style.css";
 
 //性能
-createFMPMonitor();
-getWebVitals(console.log);
+// createFMPMonitor();
+// getWebVitals(console.log);
 
 let fullscreen = true;
 let revertdialog = false;
@@ -21,11 +25,11 @@ function fetchError() {
   })
     .then((res) => {
       if (res.status == 404) {
-        console.log(res)
+        console.log(res);
       }
     })
     .catch(() => {
-      console.log('first')
+      console.log("first");
     });
 }
 function revertBehavior({ breadcrumb }) {
@@ -148,24 +152,63 @@ function xhrError() {
   ajax.send();
   ajax.addEventListener("loadend", () => {});
 }
+
+let stopFn = null;
+let replayInstance = null;
+let events = [];
+
+const start = () => {
+  stopFn = record({
+    emit(event) {
+      // 将 event 存入 events 数组中
+      events.push(event);
+      console.log(event);
+    },
+  });
+};
+
+setTimeout(() => {
+  start();
+}, 2000);
+
+const replay = () => {
+  const el = document.getElementById("replay");
+  stopFn();
+  setTimeout(() => {
+    if (el) {
+      if (replayInstance) {
+        return;
+      }
+      replayInstance = new rrwebPlayer({
+        target: el, // 可以自定义 DOM 元素
+        // 配置项
+        props: {
+          events,
+        },
+      });
+    }
+  }, 1);
+};
 </script>
 
 <template>
-  <div class="home">
-    <el-row>
-      <el-button type="primary" @click="codeErr">js错误</el-button>
-      <el-button type="success" @click="asyncError">异步错误</el-button>
-      <el-button type="danger" @click="promiseErr">promise错误</el-button>
-    </el-row>
-    <el-row>
-      <el-button type="info" @click="xhrError">xhr请求报错</el-button>
-      <el-button type="warning" @click="fetchError">fetch请求报错</el-button>
-    </el-row>
-    <el-row>
-      <el-button type="danger" @click="resourceError">加载资源报错</el-button>
-    </el-row>
-    <p class="error">报错统计</p>
-    <el-table :data="tableData" style="width: 100%">
+  <div class="content">
+    <div class="item">
+      <el-space direction="vertical">
+        <el-button type="primary" @click="codeErr">js错误</el-button>
+        <el-button type="success" @click="asyncError">异步错误</el-button>
+        <el-button type="danger" @click="promiseErr">promise错误</el-button>
+        <el-button type="info" @click="xhrError">xhr请求报错</el-button>
+        <el-button type="warning" @click="fetchError">fetch请求报错</el-button>
+        <el-button type="danger" @click="resourceError">加载资源报错</el-button>
+        <el-button type="success" @click="replay">回放错误录屏</el-button>
+      </el-space>
+    </div>
+    <div class="item"><div id="replay" :ref="videoRef"></div></div>
+  </div>
+  <!-- <div class="home"> -->
+  <!-- <p class="error">报错统计</p> -->
+  <!-- <el-table :data="tableData" style="width: 100%">
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="message" label="报错信息" width="300">
       </el-table-column>
@@ -238,8 +281,8 @@ function xhrError() {
           >
         </template>
       </el-table-column>
-    </el-table>
-    <el-dialog
+    </el-table> -->
+  <!-- <el-dialog
       :title="dialogTitle"
       :class="{ 'revert-disalog': fullscreen }"
       top="10vh"
@@ -260,10 +303,16 @@ function xhrError() {
           {{ activity.content }}
         </el-timeline-item>
       </el-timeline>
-    </el-dialog>
-  </div>
+    </el-dialog> -->
+  <!-- </div> -->
 </template>
 
 <style scoped>
+.content {
+  display: flex;
+}
 
+.item {
+  flex: 1;
+}
 </style>

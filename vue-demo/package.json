@@ -17,6 +17,7 @@
     "element-plus": "^2.3.8",
     "error-stack-parser": "^2.1.4",
     "rrweb": "^2.0.0-alpha.4",
+    "rrweb-player": "^1.0.0-alpha.4",
     "vue": "^3.3.4",
     "web-vitals": "^3.4.0"
   },
